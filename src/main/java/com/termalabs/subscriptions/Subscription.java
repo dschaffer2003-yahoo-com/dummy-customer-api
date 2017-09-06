@@ -1,4 +1,4 @@
-package com.termalabs;
+package com.termalabs.subscriptions;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
