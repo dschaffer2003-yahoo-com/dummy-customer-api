@@ -17,7 +17,7 @@ public class Application {
     public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
         return args -> {
 
-            System.out.println("Welecom to Spring Boot:");
+            System.out.println("Welcome to JAWS Subscription Manager:");
 
 
         };
