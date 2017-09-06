@@ -2,8 +2,11 @@ package rabbitmq;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeoutException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,7 +23,9 @@ import rabbitmq.Subscription.SubscriptionType;
 public class SubscriptionListener {
 
 	private final static String ADD_SUBSCRIPTION_QUEUE = "addSubscriptionQueue";
-	private final Map<URL, SubscriptionType> subscriptions;
+	private final static String DELETE_SUBSCRIPTION_QUEUE = "deleteSubscriptionQueue";
+	private final static String PREDICTION_SUBSCRIPTION_QUEUE = "predictionSubscriptionQueue";
+	private final Map<SubscriptionType, Set<URL>> subscriptions;
 	private final ObjectMapper om;
 
 	private Connection connection;
@@ -30,13 +35,33 @@ public class SubscriptionListener {
 		factory.setHost("localhost");
 		this.connection = factory.newConnection();
 		this.subscriptions = new HashMap<>();
+		Arrays.asList(SubscriptionType.values()).forEach(e -> subscriptions.put(e, new HashSet<>()));		
 		this.om = new ObjectMapper();
 	}
 
-	public static void main(String[] argv) throws Exception {
-		SubscriptionListener subscriptionListener = new SubscriptionListener();
-		subscriptionListener.listenForAdds();
+	private void listen() throws Exception {
+		listenForAdds();
+		listenForDeletes();
+		listenForPredictions();	
 
+	}
+
+	private void listenForPredictions() throws Exception {
+		Channel subscriptionChannel = connection.createChannel();
+
+		subscriptionChannel.queueDeclare(PREDICTION_SUBSCRIPTION_QUEUE, true, false, false, null);
+
+		Consumer subscriptionConsumer = new DefaultConsumer(subscriptionChannel) {
+			@Override
+			public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties,
+					byte[] body) throws IOException {
+				Prediction prediction = om.readValue(body, Prediction.class);
+				subscriptions.get(Subscription.SubscriptionType.PREDICTION)
+				    .forEach(url->System.out.println("Sending prediction to URL " + prediction +  " " + url));
+			}
+		};
+		subscriptionChannel.basicConsume(PREDICTION_SUBSCRIPTION_QUEUE, true, subscriptionConsumer);
+		
 	}
 
 	private void listenForAdds() throws Exception {
@@ -49,11 +74,35 @@ public class SubscriptionListener {
 			public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties,
 					byte[] body) throws IOException {
 				Subscription subscription = om.readValue(body, Subscription.class);
-				subscriptions.put(new URL(subscription.getUrl()), subscription.getSubscriptionType());
+				subscriptions.get(subscription.getSubscriptionType()).add(new URL(subscription.getUrl()));
 				System.out.println(" Adding subscription " + subscription);
 			}
 		};
 		subscriptionChannel.basicConsume(ADD_SUBSCRIPTION_QUEUE, true, subscriptionConsumer);
+
+	}
+
+	private void listenForDeletes() throws Exception {
+		Channel subscriptionChannel = connection.createChannel();
+
+		subscriptionChannel.queueDeclare(DELETE_SUBSCRIPTION_QUEUE, true, false, false, null);
+
+		Consumer subscriptionConsumer = new DefaultConsumer(subscriptionChannel) {
+			@Override
+			public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties,
+					byte[] body) throws IOException {
+				Subscription subscription = om.readValue(body, Subscription.class);
+				subscriptions.get(subscription.getSubscriptionType()).remove(new URL(subscription.getUrl()));
+				System.out.println(" Deleting subscription " + subscription);
+			}
+		};
+		subscriptionChannel.basicConsume(DELETE_SUBSCRIPTION_QUEUE, true, subscriptionConsumer);
+
+	}
+
+	public static void main(String[] argv) throws Exception {
+		SubscriptionListener subscriptionListener = new SubscriptionListener();
+		subscriptionListener.listen();
 
 	}
 }
