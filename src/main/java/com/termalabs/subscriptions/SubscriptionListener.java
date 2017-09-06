@@ -1,5 +1,6 @@
 package com.termalabs.subscriptions;
 
+import static com.termalabs.subscriptions.SubscriptionConstants.*;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
@@ -24,9 +25,7 @@ import rabbitmq.Prediction;
 
 public class SubscriptionListener {
 
-	private final static String ADD_SUBSCRIPTION_QUEUE = "addSubscriptionQueue";
-	private final static String DELETE_SUBSCRIPTION_QUEUE = "deleteSubscriptionQueue";
-	private final static String PREDICTION_SUBSCRIPTION_QUEUE = "predictionSubscriptionQueue";
+
 	private final Map<SubscriptionType, Set<URL>> subscriptions;
 	private final ObjectMapper om;
 
@@ -76,7 +75,7 @@ public class SubscriptionListener {
 			public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties,
 					byte[] body) throws IOException {
 				Subscription subscription = om.readValue(body, Subscription.class);
-				subscriptions.get(subscription.getSubscriptionType()).add(new URL(subscription.getUrl()));
+				subscriptions.get(subscription.getType()).add(new URL(subscription.getUrl()));
 				System.out.println(" Adding subscription " + subscription);
 			}
 		};
@@ -94,7 +93,7 @@ public class SubscriptionListener {
 			public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties,
 					byte[] body) throws IOException {
 				Subscription subscription = om.readValue(body, Subscription.class);
-				subscriptions.get(subscription.getSubscriptionType()).remove(new URL(subscription.getUrl()));
+				subscriptions.get(subscription.getType()).remove(new URL(subscription.getUrl()));
 				System.out.println(" Deleting subscription " + subscription);
 			}
 		};
