@@ -1,4 +1,4 @@
-package rabbitmq;
+package com.termalabs;
 
 import java.io.IOException;
 import java.net.URL;
@@ -18,7 +18,9 @@ import com.rabbitmq.client.Consumer;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 
-import rabbitmq.Subscription.SubscriptionType;
+import com.termalabs.Subscription.SubscriptionType;
+
+import rabbitmq.Prediction;
 
 public class SubscriptionListener {
 

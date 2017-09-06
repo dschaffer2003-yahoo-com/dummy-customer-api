@@ -1,4 +1,4 @@
-package rabbitmq;
+package com.termalabs;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
