@@ -27,7 +27,7 @@ public class SubscriptionController {
 	
 	@RequestMapping(
 			method = RequestMethod.DELETE, 
-			value = "{subscriberUrl}")
+			value = "{subscriberUrl}/{subscriptionType}")
 	public void deleteSubscription(@PathVariable String subscriberUrl, @PathVariable String subscriptionType) throws Exception {
 		subscriptionService.deleteSubscription(subscriberUrl, subscriptionType);
 	}

@@ -63,6 +63,10 @@ public class SubscriptionListener {
 		
 	}
 
+	/**
+	 * TODO Find a way to encode full URL in the subscription path instead of prepending https
+	 * @throws Exception
+	 */
 	private void listenForAdds() throws Exception {
 		Channel subscriptionChannel = connection.createChannel();
 
@@ -73,8 +77,8 @@ public class SubscriptionListener {
 			public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties,
 					byte[] body) throws IOException {
 				Subscription subscription = om.readValue(body, Subscription.class);
-				subscriptions.get(subscription.getType()).add(new URL(subscription.getUrl()));
 				System.out.println(" Adding subscription " + subscription);
+				subscriptions.get(subscription.getType()).add(new URL("https://" + subscription.getUrl()));
 			}
 		};
 		subscriptionChannel.basicConsume(ADD_SUBSCRIPTION_QUEUE, true, subscriptionConsumer);
@@ -91,8 +95,8 @@ public class SubscriptionListener {
 			public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties,
 					byte[] body) throws IOException {
 				Subscription subscription = om.readValue(body, Subscription.class);
-				subscriptions.get(subscription.getType()).remove(new URL(subscription.getUrl()));
 				System.out.println(" Deleting subscription " + subscription);
+				subscriptions.get(subscription.getType()).remove(new URL("https://" + subscription.getUrl()));
 			}
 		};
 		subscriptionChannel.basicConsume(DELETE_SUBSCRIPTION_QUEUE, true, subscriptionConsumer);
