@@ -4,6 +4,8 @@ import java.io.IOException;
 
 import javax.annotation.PreDestroy;
 
+import org.springframework.stereotype.Component;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.AMQP.BasicProperties;
@@ -14,6 +16,7 @@ import com.rabbitmq.client.ConnectionFactory;
 import static com.termalabs.subscriptions.SubscriptionConstants.ADD_SUBSCRIPTION_QUEUE;
 import static com.termalabs.subscriptions.SubscriptionConstants.DELETE_SUBSCRIPTION_QUEUE;
 
+@Component
 public class SubscriptionService {
 	
 	private final ObjectMapper om;

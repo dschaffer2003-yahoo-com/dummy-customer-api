@@ -21,8 +21,6 @@ import com.rabbitmq.client.Envelope;
 
 import com.termalabs.subscriptions.Subscription.SubscriptionType;
 
-import rabbitmq.Prediction;
-
 public class SubscriptionListener {
 
 
