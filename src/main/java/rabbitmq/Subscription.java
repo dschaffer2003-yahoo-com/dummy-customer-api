@@ -1,5 +1,7 @@
 package rabbitmq;
 
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+
 public class Subscription {
 	
 	public enum SubscriptionType {
@@ -21,5 +23,9 @@ public class Subscription {
 		return subscriptionType;
 	}
 	
+    @Override
+    public String toString() {
+        return ReflectionToStringBuilder.toString(this);
+    }
 
 }
