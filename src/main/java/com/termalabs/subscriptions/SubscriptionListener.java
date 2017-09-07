@@ -1,6 +1,5 @@
 package com.termalabs.subscriptions;
 
-import static com.termalabs.subscriptions.SubscriptionConstants.*;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
@@ -9,6 +8,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeoutException;
+
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rabbitmq.client.AMQP;
@@ -21,6 +22,11 @@ import com.rabbitmq.client.Envelope;
 
 import com.termalabs.subscriptions.Subscription.SubscriptionType;
 
+import static com.termalabs.subscriptions.SubscriptionConstants.ADD_SUBSCRIPTION_QUEUE;
+import static com.termalabs.subscriptions.SubscriptionConstants.DELETE_SUBSCRIPTION_QUEUE;
+import static com.termalabs.subscriptions.SubscriptionConstants.PREDICTION_SUBSCRIPTION_QUEUE;
+
+@SpringBootApplication
 public class SubscriptionListener {
 
 
