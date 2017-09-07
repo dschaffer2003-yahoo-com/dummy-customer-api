@@ -17,7 +17,8 @@ public class DummyJaws {
 
 			Channel channel = connection.createChannel();
 
-			AMQP.BasicProperties queueProperties = new AMQP.BasicProperties.Builder().contentType("text/plain")
+			AMQP.BasicProperties queueProperties = new AMQP.BasicProperties.Builder()
+					.contentType("text/plain")
 					.deliveryMode(2).build();
 
 			channel.queueDeclare(PREDICTION_SUBSCRIPTION_QUEUE, true, false, false, null);
