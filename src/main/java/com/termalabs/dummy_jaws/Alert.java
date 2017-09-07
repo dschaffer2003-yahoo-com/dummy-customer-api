@@ -1,15 +1,17 @@
-package com.termalabs.subscriptions;
+package com.termalabs.dummy_jaws;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
-public class Prediction extends SubscriptionContent {
+import com.termalabs.subscriptions.SubscriptionContent;
+
+public class Alert extends SubscriptionContent {
 	private String content;
 	
-	public Prediction() {
+	public Alert() {
 		
 	}
 
-	public Prediction(String content) {
+	public Alert(String content) {
 		this.content = content;
 	}
 

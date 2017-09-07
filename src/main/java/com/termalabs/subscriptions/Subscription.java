@@ -8,7 +8,7 @@ import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 public class Subscription {
 	
 	public enum SubscriptionType {
-		PREDICTION("prediction"), ALERT("alert"), EVENT("event");
+		PREDICTIONS("predictions"), ALERTS("alerts"), EVENTS("events");
 		
 		private String value;
 

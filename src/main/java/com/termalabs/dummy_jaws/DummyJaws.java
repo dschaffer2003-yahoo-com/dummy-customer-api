@@ -1,14 +1,13 @@
 package com.termalabs.dummy_jaws;
 
+import static com.termalabs.shared.Constants.*;
+
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 
-import com.termalabs.subscriptions.Prediction;
-
 public class DummyJaws {
-	final static String PREDICTION_SUBSCRIPTION_QUEUE = "predictionSubscriptionQueue";
 
 	public static void main(String[] args) throws Exception {
 		ConnectionFactory factory = new ConnectionFactory();
@@ -21,10 +20,20 @@ public class DummyJaws {
 					.contentType("text/plain")
 					.deliveryMode(2).build();
 
-			channel.queueDeclare(PREDICTION_SUBSCRIPTION_QUEUE, true, false, false, null);
+			channel.queueDeclare(PREDICTIONS_SUBSCRIPTION_QUEUE, true, false, false, null);
 			String message = new Prediction("some prediction").asJson();
-			channel.basicPublish("", PREDICTION_SUBSCRIPTION_QUEUE, queueProperties, message.getBytes("UTF-8"));
-			System.out.println(" [x] Sent '" + message + "'");
+			channel.basicPublish("", PREDICTIONS_SUBSCRIPTION_QUEUE, queueProperties, message.getBytes("UTF-8"));
+			System.out.println("Sent '" + message + "'");
+			
+			channel.queueDeclare(ALERTS_SUBSCRIPTION_QUEUE, true, false, false, null);
+			message = new Alert("some alert").asJson();
+			channel.basicPublish("", ALERTS_SUBSCRIPTION_QUEUE, queueProperties, message.getBytes("UTF-8"));
+			System.out.println("Sent '" + message + "'");
+			
+			channel.queueDeclare(EVENTS_SUBSCRIPTION_QUEUE, true, false, false, null);
+			message = new Event("some event").asJson();
+			channel.basicPublish("", EVENTS_SUBSCRIPTION_QUEUE, queueProperties, message.getBytes("UTF-8"));
+			System.out.println("Sent '" + message + "'");
 
 			channel.close();
 		}
