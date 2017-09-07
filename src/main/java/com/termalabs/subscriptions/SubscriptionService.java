@@ -30,6 +30,7 @@ public class SubscriptionService {
 	private final Connection connection;
 	private final Map<SubscriptionType, Set<URL>> subscriptions;
 	private Channel subscriptionChannel;
+	private final boolean durable;
 
 	public SubscriptionService() throws Exception {
 
@@ -39,6 +40,7 @@ public class SubscriptionService {
 		this.subscriptions = new HashMap<>();
 		Arrays.asList(SubscriptionType.values()).forEach(e -> subscriptions.put(e, new HashSet<>()));
 		this.subscriptionChannel = connection.createChannel();
+		durable = true;
 		listenForPredictions();
 		listenForAlerts();
 		listenForEvents();
@@ -53,7 +55,7 @@ public class SubscriptionService {
 
 	public void deleteSubscription(String url, String type) throws Exception {
 		Subscription subscription = new Subscription(url, type);
-		System.out.println(" Deleting subscription " + subscription);
+		System.out.println("Deleting subscription " + subscription);
 		subscriptions.get(subscription.getType()).remove(new URL("https://" + subscription.getUrl()));
 		
 	}
@@ -66,13 +68,14 @@ public class SubscriptionService {
 
 	private void listenForPredictions() throws Exception {
 
-		subscriptionChannel.queueDeclare(PREDICTIONS_SUBSCRIPTION_QUEUE, true, false, false, null);
+		subscriptionChannel.queueDeclare(PREDICTIONS_SUBSCRIPTION_QUEUE, durable, false, false, null);
 
 		Consumer subscriptionConsumer = new DefaultConsumer(subscriptionChannel) {
 			@Override
 			public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties,
 					byte[] body) throws IOException {
 				String asString = new String(body);
+				System.out.println(String.format("Consuming prediction %s", asString));
 				subscriptions.get(Subscription.SubscriptionType.PREDICTIONS)
 				    .forEach(url->System.out.println(String.format("Sending prediction %s to URL %s ", asString, url)));
 			}
@@ -83,13 +86,14 @@ public class SubscriptionService {
 	
 	private void listenForAlerts() throws Exception {
 
-		subscriptionChannel.queueDeclare(ALERTS_SUBSCRIPTION_QUEUE, true, false, false, null);
+		subscriptionChannel.queueDeclare(ALERTS_SUBSCRIPTION_QUEUE, durable, false, false, null);
 
 		Consumer subscriptionConsumer = new DefaultConsumer(subscriptionChannel) {
 			@Override
 			public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties,
 					byte[] body) throws IOException {
 				String asString = new String(body);
+				System.out.println(String.format("Consuming alert %s", asString));
 				subscriptions.get(Subscription.SubscriptionType.ALERTS)
 				    .forEach(url->System.out.println(String.format("Sending alert %s to URL %s ", asString, url)));
 			}
@@ -100,13 +104,14 @@ public class SubscriptionService {
 	
 	private void listenForEvents() throws Exception {
 
-		subscriptionChannel.queueDeclare(EVENTS_SUBSCRIPTION_QUEUE, true, false, false, null);
+		subscriptionChannel.queueDeclare(EVENTS_SUBSCRIPTION_QUEUE, durable, false, false, null);
 
 		Consumer subscriptionConsumer = new DefaultConsumer(subscriptionChannel) {
 			@Override
 			public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties,
 					byte[] body) throws IOException {
 				String asString = new String(body);
+				System.out.println(String.format("Consuming event %s", asString));
 				subscriptions.get(Subscription.SubscriptionType.EVENTS)
 				    .forEach(url->System.out.println(String.format("Sending event %s to URL %s ", asString, url)));
 			}
