@@ -17,7 +17,7 @@ public class SubscriptionApplication {
     public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
         return args -> {
 
-            System.out.println("Welcome to JAWS Subscription Manager:");
+            System.out.println("Welcome to the Dummy Customer API:");
 
 
         };
