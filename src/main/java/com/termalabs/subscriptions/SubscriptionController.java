@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class SubscriptionController {
 
 	@RequestMapping(
-			method = RequestMethod.POST, 
+			method = RequestMethod.PUT, 
 			value = "alert/early")
 	public void earlyAlert(@RequestBody String alert) throws Exception {
 		System.out.println(String.format("Received alert %s", alert));
