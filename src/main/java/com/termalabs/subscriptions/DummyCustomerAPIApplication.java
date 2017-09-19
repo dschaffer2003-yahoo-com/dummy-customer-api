@@ -7,10 +7,10 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
-public class SubscriptionApplication {
+public class DummyCustomerAPIApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(SubscriptionApplication.class, args);
+        SpringApplication.run(DummyCustomerAPIApplication.class, args);
     }
 
     @Bean

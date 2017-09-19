@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping(path = "/dummy-customer-api")
-public class SubscriptionController {
+public class DummyCustomerAPIController {
 
 	@RequestMapping(
 			method = RequestMethod.PUT, 
