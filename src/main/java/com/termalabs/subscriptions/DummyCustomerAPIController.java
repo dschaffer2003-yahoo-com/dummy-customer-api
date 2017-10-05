@@ -15,7 +15,7 @@ public class DummyCustomerAPIController {
 
 	@RequestMapping(
 			method = RequestMethod.PUT, 
-			value = "alert/early")
+			value = "alert")
 	public void earlyAlert(@RequestBody String alert) throws Exception {
 		System.out.println(String.format("Received alert %s", alert));
 	}
