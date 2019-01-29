@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(path = "/dummy-customer-api")
 public class DummyCustomerAPIController {
 
-	private static Integer msgCount = 0;
+	private static int msgCount = 0;
 
 	@PutMapping(
 			value = "alert",
@@ -52,10 +52,8 @@ public class DummyCustomerAPIController {
 			consumes = MediaType.APPLICATION_JSON_VALUE
 			)
 	public void schedulerData(@RequestBody String schedulerData) throws Exception {
-		synchronized (msgCount) {
-			System.out.println(String.format("Received scheduler data for msg %d", msgCount));
-			msgCount = msgCount + 1;
-		}
+		System.out.println(String.format("Received scheduler data for msg %d", Integer.valueOf(msgCount)));
+		msgCount = msgCount + 1;
 		delayIfConfigured("SCHEDULER_DELAY_IN_SECONDS");
 	}
 
@@ -79,7 +77,7 @@ public class DummyCustomerAPIController {
 		String delayAsString = System.getenv(delayEnvVariable);
 		if (delayAsString != null) {
 			System.out.println(String.format("Delaying for %s seconds.", delayAsString));
-            Thread.sleep(Integer.valueOf(delayAsString)*1000);
+            Thread.sleep(Integer.valueOf(delayAsString).intValue()*1000);
 		}
 	}
 
