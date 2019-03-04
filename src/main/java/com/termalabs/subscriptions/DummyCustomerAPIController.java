@@ -68,9 +68,18 @@ public class DummyCustomerAPIController {
 	@PutMapping(
 			value = "jobStreamRunTransitioned",
 			consumes = MediaType.APPLICATION_JSON_VALUE)
-	public void jobStreamRunDeleted(@RequestBody String jobStreamRunTransitioned) throws Exception {
+	public void jobStreamRunTransitioned(@RequestBody String jobStreamRunTransitioned) throws Exception {
 		System.out.println(String.format("Received jobStreamRunTransitioned %s", jobStreamRunTransitioned));
 		delayIfConfigured("JOB_STREAM_RUN_TRANSITIONED_DELAY_IN_SECONDS");
+	}
+	
+	@PutMapping(
+			value = "general/{topicName}",
+			consumes = MediaType.APPLICATION_JSON_VALUE)
+	public void general(
+			@PathVariable String topicName, 
+			@RequestBody String payload) throws Exception {
+		System.out.println(String.format("Received payload %s for topic %s", payload, topicName));
 	}
 
 	private void delayIfConfigured(String delayEnvVariable) throws InterruptedException {
